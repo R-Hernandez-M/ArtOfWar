@@ -337,4 +337,4 @@ public class Tablero {
         JOptionPane.showMessageDialog(null,"Ejercito aliado lleno");
 
     }
-}
+
