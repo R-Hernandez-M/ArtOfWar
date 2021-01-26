@@ -9,7 +9,7 @@ public class DJ {
 
     public void playAttack(){
         try{
-            AudioInputStream ais=AudioSystem.getAudioInputStream(new File("C:\\Users\\Kayserend\\IdeaProjects\\learn jpanel\\src\\nian.wav").getAbsoluteFile());
+            AudioInputStream ais=AudioSystem.getAudioInputStream(new File("src/main/resources/Attack.wav").getAbsoluteFile());
             Clip clip =AudioSystem.getClip();
             clip.open(ais);
             clip.start();
@@ -20,7 +20,7 @@ public class DJ {
     }
     public void playMove(){
         try{
-            AudioInputStream ais=AudioSystem.getAudioInputStream(new File("C:\\Users\\Kayserend\\IdeaProjects\\learn jpanel\\src\\nian.wav").getAbsoluteFile());
+            AudioInputStream ais=AudioSystem.getAudioInputStream(new File("src/main/resources/Moverse.wav").getAbsoluteFile());
             Clip clip =AudioSystem.getClip();
             clip.open(ais);
             clip.start();
@@ -30,15 +30,52 @@ public class DJ {
         }
     }
     public void playDefend(){
-
+        try{
+            AudioInputStream ais=AudioSystem.getAudioInputStream(new File("src/main/resources/block.wav").getAbsoluteFile());
+            Clip clip =AudioSystem.getClip();
+            clip.open(ais);
+            clip.start();
+        }catch(Exception ex)
+        {
+            System.out.println("no se pudo reproducir");
+        }
     }
-    public void playMenu(){
 
+    public void playMenu() {
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new File("src/main/resources/Menu.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(ais);
+            clip.start();
+        } catch (Exception ex) {
+
+            System.out.println("no se pudo reproducir");
+
+        }
     }
+
     public void playVictory(){
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new File("src/main/resources/Victory.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(ais);
+            clip.start();
+        } catch (Exception ex) {
+
+            System.out.println("no se pudo reproducir");
+
+        }
+    }
+    public void playDefeat(){ try {
+        AudioInputStream ais = AudioSystem.getAudioInputStream(new File("src/main/resources/Defeat.wav").getAbsoluteFile());
+        Clip clip = AudioSystem.getClip();
+        clip.open(ais);
+        clip.start();
+    } catch (Exception ex) {
+
+        System.out.println("no se pudo reproducir");
 
     }
-    public void playDefeat(){
 
     }
     public void playCombat(){
