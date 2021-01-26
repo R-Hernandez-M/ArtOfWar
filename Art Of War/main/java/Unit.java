@@ -5,6 +5,7 @@ public class Unit {
     protected int hp, atk, armor,range,speed,id;
     protected boolean defending=false;
     protected int[] posicion=new int[2];
+    protected String tipo="----------------";
     protected ImageIcon icon=new ImageIcon("src/main/resources/empty.png");
     //builder
     public Unit(){
@@ -21,8 +22,8 @@ public class Unit {
         else
             return true;
     }
-    public boolean ReciveDamage(int damage){
-        this.hp-=damage;
+    public boolean receiveDamage(int damage){
+        this.hp=this.hp-damage;
         if(this.hp<=0)
             return true;
         else
@@ -39,6 +40,9 @@ public class Unit {
     }
 
     //get classes in case they are needed
+    public String getTipo(){
+        return tipo;
+    }
     public int getHp() {
         return hp;
     }

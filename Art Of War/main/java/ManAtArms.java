@@ -4,7 +4,7 @@ public class ManAtArms extends Unit {
     private String tipo;
     //builder
     public ManAtArms(){
-        tipo="hombre de armas";
+        super.tipo="hombre de armas";
         super.id=1;
         super.hp=10;
         super.atk=5;
@@ -13,6 +13,7 @@ public class ManAtArms extends Unit {
         super.speed=2;
         super.icon=new ImageIcon("src/main/resources/hombre de armas jugador.png");
     }
+
     //shows on console the information of the unit
     @Override
     public String toString() {
@@ -23,6 +24,6 @@ public class ManAtArms extends Unit {
                 ", armor=" + armor +
                 ", range=" + range +
                 ", speed=" + speed +
-                '}';
+                ", posicion="+posicion[0]+","+posicion[1]+'}';
     }
 }

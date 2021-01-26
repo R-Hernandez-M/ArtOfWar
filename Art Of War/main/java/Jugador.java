@@ -6,81 +6,49 @@ public class Jugador {
     //Unit []ejercito=new Unit[10];
     Tablero mapa;
     boolean computadora;
-    Scanner scan=new Scanner(System.in);
-    int selector_unidad=0;
-    public Jugador(boolean computadora){
-        this.computadora=computadora;
+    Scanner scan = new Scanner(System.in);
+    //constructor
+    public Jugador(boolean computadora) {
+        this.computadora = computadora;
     }
-
+    //acciones de la computadora
     public int[] MoverAutomatico(int h, ArrayList<Unit> ejercito) {
-        int []nueva_posicion=ejercito.get(h).getPosicion();
-        //System.out.println(nueva_posicion[0]+","+nueva_posicion[1]);
-        nueva_posicion[1]-=2;
+        int[] nueva_posicion = ejercito.get(h).getPosicion();
+        nueva_posicion[1] -= ejercito.get(h).getSpeed();
         ejercito.get(h).move(nueva_posicion);
         return nueva_posicion;
     }
-    /*
-    public int[] AtacarAutomatico(){
-        int [] enemigo_encontrado=new int[2];
-        for (int i = ejercito[selector_unidad].getPosicion()[0] - 1; i < ejercito[selector_unidad].getPosicion()[0] + 1; i++) {
-            for (int j = ejercito[selector_unidad].getPosicion()[1] - 1; j < ejercito[selector_unidad].getPosicion()[1] + 1; j++) {
-                if (mapa.getTablero()[i][j] == "A".charAt(0)) {
-                    enemigo_encontrado=ejercito[selector_unidad].AtacarIA(i,j);
+    public int[] AtacarAutomatico(ArrayList<Unit> ejercito, int hh, int[][] ubicacionAliado) {
+        int[] enemigoEncontrado = new int[2];
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 16; j++) {
+                if (ubicacionAliado[i][j] > 0) {
+                    enemigoEncontrado[0] = i;
+                    enemigoEncontrado[1] = j;
+                    ejercito.get(hh).Attack(enemigoEncontrado);
+                    break;
+                } else {
+
                 }
             }
         }
-        return enemigo_encontrado;
+        return enemigoEncontrado;
     }
-    public int[] MoverHumano(int a){
-        int b,c;
-        do{
-            try{
-                System.out.println("introduzca la fila de la posición a moverse");
-                b=scan.nextInt();
-                System.out.println("introduzca la columna de la posición a moverse");
-                c=scan.nextInt();
-                if (Math.abs(b-ejercito[1].getPosicion()[0])>2||Math.abs(c-ejercito[1].getPosicion()[1])>2){
-                    System.out.println("No es posible moverse a esa posicion\nIntroduzca una posición nueva");
-                    throw new IllegalArgumentException();
-                }
-                break;
-            }catch (Exception e){
-                scan.nextLine();
-            }
-        }while(true);
-        return ejercito[a].Mover(b,c);
+    //acciones del jugador humano
+    public boolean MoverHumano(ArrayList<Unit> ejercito, int h,int[]a) {
+        /*int []nuevaPosicion=a;
+        if (Math.abs(nuevaPosicion[0]-ejercito.get(h).getPosicion()[0])<=ejercito.get(h).getSpeed()&&Math.abs(nuevaPosicion[1]-ejercito.get(h).getPosicion()[1])<=ejercito.get(h).getSpeed())
+            return true;
+        else
+            return false;*/
+        return ejercito.get(h).move(a);
     }
+    public boolean atacarHumano(ArrayList<Unit> ejercito, int h,int[]a){
+        int []atacarPosicion=a;
+        return ejercito.get(h).Attack(atacarPosicion);
+    }
+}/*
     public int[] AtacarHumano(int a){
         return ejercito[a].Atacar();
     }
-    public Unidad[] getEjercito() {
-        return ejercito;
-    }
-    public void setEjercito(Tablero mapa) {
-        this.mapa=mapa;
-        int h=0;
-        if (computadora){
-            for (int i=0;i<10;i++){
-                for (int j=0;j<10;j++){
-                    if (this.mapa.getTablero()[i][j]=="E".charAt(0)) {
-                        ejercito[h] = new Unidad(i, j, mapa);
-                        h++;
-                    }
-                }
-            }
-        }
-        else{
-            for (int i=0;i<10;i++){
-                for (int j=0;j<10;j++){
-                    if (this.mapa.getTablero()[i][j]=="A".charAt(0)) {
-                        ejercito[h] = new Unidad(i, j, mapa);
-                        h++;
-                    }
-                }
-            }
-        }
-    }
-    public void setMapa(Tablero mapa) {
-        this.mapa = mapa;
-    } */
-}
+    }*/

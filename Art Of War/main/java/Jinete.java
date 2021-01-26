@@ -4,7 +4,7 @@ public class Jinete extends Unit {
 
     //builder
     public Jinete() {
-        tipo = "jinete";
+        super.tipo = "jinete";
         super.id=3;
         super.hp = 10;
         super.atk = 5;
@@ -24,6 +24,6 @@ public class Jinete extends Unit {
                 ", armor=" + armor +
                 ", range=" + range +
                 ", speed=" + speed +
-                '}';
+                ", posicion="+posicion[0]+","+posicion[1]+'}';
     }
 }

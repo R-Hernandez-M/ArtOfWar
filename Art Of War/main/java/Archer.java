@@ -4,12 +4,12 @@ public class Archer extends Unit{
     private String tipo;
     //builder
     public Archer(){
-        tipo="arquero";
+        super.tipo="arquero";
         super.id=2;
         super.hp=5;
         super.atk=4;
         super.armor=0;
-        super.range=10;
+        super.range=5;
         super.speed=1;
         super.icon=new ImageIcon("src/main/resources/arquero jugador.png");
     }
@@ -23,6 +23,6 @@ public class Archer extends Unit{
                 ", armor=" + armor +
                 ", range=" + range +
                 ", speed=" + speed +
-                '}';
+                ", posicion="+posicion[0]+","+posicion[1]+'}';
     }
 }
