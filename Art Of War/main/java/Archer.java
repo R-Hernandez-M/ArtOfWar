@@ -1,7 +1,7 @@
 import javax.swing.*;
 
 public class Archer extends Unit{
-    private String tipo;
+
     //builder
     public Archer(){
         super.tipo="arquero";

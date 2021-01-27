@@ -12,26 +12,56 @@ public class Jugador {
         this.computadora = computadora;
     }
     //acciones de la computadora
-    public int[] MoverAutomatico(int h, ArrayList<Unit> ejercito) {
+    public int[] MoverAutomatico(int h, ArrayList<Unit> ejercito,int[][] enemigo) {
         int[] nueva_posicion = ejercito.get(h).getPosicion();
+        if (nueva_posicion[1]==0&&nueva_posicion[0]==0)
+            return nueva_posicion;
+        boolean noEsPosible=true;
         nueva_posicion[1] -= ejercito.get(h).getSpeed();
+        if (nueva_posicion[1]<0)
+            nueva_posicion[1]=0;
+        while (noEsPosible){
+            if(enemigo[nueva_posicion[0]][nueva_posicion[1]]==0){
+                noEsPosible=false;
+            }
+            else {
+                nueva_posicion[1]++;
+            }
+        }
+
         ejercito.get(h).move(nueva_posicion);
         return nueva_posicion;
+
     }
     public int[] AtacarAutomatico(ArrayList<Unit> ejercito, int hh, int[][] ubicacionAliado) {
-        int[] enemigoEncontrado = new int[2];
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 16; j++) {
+        int[] enemigoEncontrado = {-1,-1};
+        int[] ubActual=ejercito.get(hh).getPosicion();
+        int range=ejercito.get(hh).getRange();
+        int limXiz=0,limXder=0,limYiz=0,limYder=0;
+        limXiz=ubActual[0]-range;
+        if (limXiz<0)
+            limXiz=0;
+        limXder=ubActual[0]+range;
+        if (limXder>9)
+            limXder=9;
+        limYiz=ubActual[1]-range;
+        if (limYiz<0)
+            limYiz=0;
+        limYder=ubActual[1]+range;
+        if (limYder>15)
+            limYder=15;
+        for (int i = limXiz; i < limXder; i++) {
+            for (int j = limYiz; j < limYder; j++) {
+                System.out.println("i: "+i+", j: "+j);
                 if (ubicacionAliado[i][j] > 0) {
                     enemigoEncontrado[0] = i;
                     enemigoEncontrado[1] = j;
                     ejercito.get(hh).Attack(enemigoEncontrado);
                     break;
-                } else {
-
                 }
             }
         }
+        System.out.println("encontrado: "+enemigoEncontrado[0]+","+enemigoEncontrado[1]);
         return enemigoEncontrado;
     }
     //acciones del jugador humano

@@ -23,7 +23,7 @@ public class Unit {
             return true;
     }
     public boolean receiveDamage(int damage){
-        this.hp=this.hp-damage;
+        this.hp-=(damage-this.armor);
         if(this.hp<=0)
             return true;
         else

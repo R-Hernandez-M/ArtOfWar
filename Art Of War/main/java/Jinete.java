@@ -1,14 +1,12 @@
 import javax.swing.*;
 public class Jinete extends Unit {
-    private String tipo;
-
     //builder
     public Jinete() {
         super.tipo = "jinete";
         super.id=3;
         super.hp = 10;
         super.atk = 5;
-        super.armor = 1;
+        super.armor = 0;
         super.range=1;
         super.speed = 5;
         super.icon=new ImageIcon("src/main/resources/jinete jugador.png");

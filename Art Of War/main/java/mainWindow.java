@@ -4,12 +4,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 public class mainWindow {
     Tablero campoDeJuego;
+    DJ djmambo=new DJ();
     JFrame frame;
     JButton boton;
     JPanel panelCentral;
     ImageIcon titulo=new ImageIcon("src/main/resources/the art of war.jpg");
     public mainWindow(){
+        djmambo.playMenu();
         frame=new JFrame();
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         boton=new JButton(new ImageIcon("src/main/resources/boton inicial.jpg"));
         boton.addActionListener(new empezar());

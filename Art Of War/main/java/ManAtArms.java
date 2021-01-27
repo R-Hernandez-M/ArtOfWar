@@ -1,7 +1,6 @@
 import javax.swing.*;
 
 public class ManAtArms extends Unit {
-    private String tipo;
     //builder
     public ManAtArms(){
         super.tipo="hombre de armas";

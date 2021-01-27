@@ -13,10 +13,10 @@ public class Tablero {
     Jugador cpu=new Jugador(true);
     //declaro las variables de imagenes necesarias
     ImageIcon[][] iconos = new ImageIcon[10][16];
+    ImageIcon name=new ImageIcon("src/main/resources/the art of war.png");
     Image fondo = Toolkit.getDefaultToolkit().getImage("src/main/resources/fondo_2.png");
     Image icon = Toolkit.getDefaultToolkit().getImage("src/main/resources/hombre_de_armas.png");
     //declaro los botones necesarios
-    JButton genericButton;
     JButton genericButton1;
     JButton genericButton2;
     JButton genericButton3;
@@ -25,10 +25,10 @@ public class Tablero {
     int[][] ubicacionAliado=new int[10][16];
     int[][] ubicacionEnemigo=new int[10][16];
 
-
     //declaro la ventana, los paneles necesarios y labels necesarios
     JFrame ventanaPrincipal;
     JPanel panelCentral;
+    JPanel panelNorte;
     JPanel panelSur;
     JLabel paraMostrar1;
     //declaro los ejercitos de los jugadores
@@ -41,7 +41,7 @@ public class Tablero {
     int hh=0;
     int selectorAccion=0;
     int selectSoldier=0;
-    int contadorDeReclutas=0;
+    int victoria=0;
     public Tablero(){
         //llena el tablero de imagenes transparentes
         for(int i=0;i<10;i++)
@@ -60,12 +60,18 @@ public class Tablero {
         }
         //inicializa la ventana principal del tablero y define sus características
         ventanaPrincipal=new JFrame();
-        ventanaPrincipal.setTitle("The Art of War 0.1 pre-alpha");
+        panelNorte=new JPanel();
+        ventanaPrincipal.setTitle("The Art of War 0.6.17.8.x alpha");
         ventanaPrincipal.setIconImage(icon);
         ventanaPrincipal.setContentPane(new ImagePainter(fondo));
         ventanaPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventanaPrincipal.setLayout(new BorderLayout());
-        ventanaPrincipal.setSize(1280,820);
+        paraMostrar1=new JLabel(name);
+        paraMostrar1.setOpaque(false);
+        panelNorte.add(paraMostrar1);
+        panelNorte.setBackground(Color.getHSBColor((float)0.57,(float)0.26666,(float)0.5));
+        ventanaPrincipal.add(panelNorte,BorderLayout.NORTH);
+        ventanaPrincipal.setSize(1280,860);
         ventanaPrincipal.setResizable(false);
         //crea un panel central con un layout de grid para poner nuestras unidades
         panelCentral=new JPanel(new GridLayout(10,16));
@@ -135,9 +141,6 @@ public class Tablero {
             }
         }
         ventanaPrincipal.setVisible(true);
-        for(int i=0;i<10;i++){
-            ejercito2.add(new ManAtArms());
-        }
     }
     public ImageIcon[][] getIconos() {
         return iconos;
@@ -155,11 +158,14 @@ public class Tablero {
         public void actionPerformed(ActionEvent e) {
             String a=e.getActionCommand();
             int[]b=new int[2];
+            mostrarSeleccion();
             String[] splited= a.split(",");
             b[0]=Integer.parseInt(splited[0]);
             b[1]=Integer.parseInt(splited[1]);
+            System.out.println(ubicacionAliado[ejercito1.get(selectSoldier).getPosicion()[0]][ejercito1.get(selectSoldier).getPosicion()[1]]);
             if (selectorAccion==0){
                 boolean sePudo=player.MoverHumano(ejercito1,selectSoldier,b);
+
                 System.out.println("posicion inicial: "+ejercito1.get(selectSoldier).getPosicion()[0]+","+ejercito1.get(selectSoldier).getPosicion()[1]+" posicion nueva: "+b[0]+","+b[1]);
                 if (sePudo){
                     iconos[b[0]][b[1]]=ejercito1.get(selectSoldier).getIcon();
@@ -180,6 +186,7 @@ public class Tablero {
                 System.out.println("Unidad a atacar: "+b[0]+","+b[1]);
                 int selectorEnemigo=0;
                 if (sePudo){
+                    discoStu.playAttack();
                     for (int i=0;i<ejercito2.size();i++){
                         if(ejercito2.get(i).getPosicion()[0]==b[0]&&ejercito2.get(i).getPosicion()[1]==b[1]) {
                             selectorEnemigo = i;
@@ -194,11 +201,16 @@ public class Tablero {
                         ejercito2.remove(selectorEnemigo);
                         ubicacionEnemigo[b[0]][b[1]]=0;
                         actualizarTablero();
+                        System.out.println("ejercito enemigo le quedan "+ejercito2.size());
                     }
                     selectorAccion=3;
-                    discoStu.playAttack();
+                    if (ejercito2.isEmpty())
+                        victoria=1;
+                    System.out.println("victoria: "+victoria);
+                    comprobarVictoria(victoria);
                 }
                 else{
+                    discoStu.playDefend();
                     System.out.println("No se pudo atacar a la posicion "+b[0]+","+b[1]+"\nPuede intentarlo de nuevo, sino, puede pasar el turno");
                 }
 
@@ -210,10 +222,21 @@ public class Tablero {
             }
         }
     }
+    public void comprobarVictoria(int vic){
+        if (vic==1){
+            JOptionPane.showMessageDialog(null,"¡¡¡¡VICTORIA!!!!");
+            discoStu.playVictory();
+        }
+        else if(vic==2){
+            JOptionPane.showMessageDialog(null,"¡¡¡¡DERROTA!!!!");
+            discoStu.playDefeat();
+        }
+    }
     public class moverJugador implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             selectorAccion=0;
+            mostrarSeleccion();
         }
     }
     public class atacarJugador implements ActionListener {
@@ -228,21 +251,65 @@ public class Tablero {
             selectorAccion=2;
         }
     }
+    public void mostrarSeleccion(){
+        int[]pos=ejercito1.get(selectSoldier).getPosicion();
+        if (ejercito1.get(selectSoldier).getID()==1) {
+            ejercito1.get(selectSoldier).setIcon(new ImageIcon("src/main/resources/hombre de armas selected.png"));
+        }
+        else if(ejercito1.get(selectSoldier).getID()==2) {
+            ejercito1.get(selectSoldier).setIcon(new ImageIcon("src/main/resources/arquero selected.png"));
+        }
+        else{
+            ejercito1.get(selectSoldier).setIcon(new ImageIcon("src/main/resources/jinete selected.png"));
+        }
+        iconos[pos[0]][pos[1]]=ejercito1.get(selectSoldier).getIcon();
+        actualizarTablero();
+    }
+    public void borrarSeleccion(){
+        int[]pos=ejercito1.get(selectSoldier).getPosicion();
+        if (ejercito1.get(selectSoldier).getID()==1) {
+            ejercito1.get(selectSoldier).setIcon(new ImageIcon("src/main/resources/hombre de armas jugador.png"));
+          }
+        else if(ejercito1.get(selectSoldier).getID()==2) {
+            ejercito1.get(selectSoldier).setIcon(new ImageIcon("src/main/resources/arquero jugador.png"));
+        }
+        else {
+            ejercito1.get(selectSoldier).setIcon(new ImageIcon("src/main/resources/jinete jugador.png"));
+        }
+        iconos[pos[0]][pos[1]]=ejercito1.get(selectSoldier).getIcon();
+        actualizarTablero();
+    }
+    /*esta clase controla lo que ocurre entre turnos, cada vez que se presione el boton "pasar" la computadora va a
+    realizar sus funciones de mover y atacar, primero comprueba si hay enemigos cerca y si los encuentra no se mueve y
+    ataca al enemigo encontrado*/
     public class pasarTurno implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             selectorAccion=3;
             //la computadora se mueve
-            moverCPU();
-            try {
-                TimeUnit.SECONDS.sleep((long)2);
+            if(hh>=ejercito2.size()){
+                hh=ejercito2.size()-1;
+            }
+            borrarSeleccion();
+            if (h>=ejercito2.size())
+                h=0;
+            if (cpu.AtacarAutomatico(ejercito2,hh,ubicacionAliado)[0]<0)
+                moverCPU();
+            /*try {
+                TimeUnit.MILLISECONDS.sleep((long)100);
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
-            }
+            }*/
             //esto va al final
+            //la computadora ataca
             atacarCPU();
+            //comprueba que queden unidades del jugador humano, de no haber unidades entonces el jugador humano pierde
+            if (ejercito1.isEmpty())
+                victoria=2;
+            System.out.println("victoria: "+victoria);
+            comprobarVictoria(victoria);
             selectSoldier++;
-            if (selectSoldier==10)
+            if (selectSoldier>=ejercito1.size())
                 selectSoldier=0;
             System.out.println("El "+ejercito1.get(selectSoldier).getTipo()+
                     " en la posicion "+ejercito1.get(selectSoldier).getPosicion()[0]+
@@ -250,14 +317,14 @@ public class Tablero {
                     " está seleccionado");
         }
     }
-    public class moverComputadora implements ActionListener {
+    /*public class moverComputadora implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
 
             int[]a=ejercito2.get(h).getPosicion();
             iconos[a[0]][a[1]]=new ImageIcon("src/main/resources/empty.png");
             ubicacionEnemigo[a[0]][a[1]]=0;
-            a=cpu.MoverAutomatico(h,ejercito2);
+            a=cpu.MoverAutomatico(h,ejercito2,ubicacionAliado);
             ubicacionEnemigo[a[0]][a[1]]=1;
             iconos[a[0]][a[1]]=ejercito2.get(h).getIcon();
             System.out.println(ejercito2.get(h).getPosicion()[0]+","+ejercito2.get(h).getPosicion()[1]);
@@ -294,45 +361,63 @@ public class Tablero {
                 hh=0;
             }
         }
-    }
+    }*/
     public void moverCPU(){
+        /*lase que controla como se mueve la cpu, toma la posicion del soldado elejido y lo mueve a la izquierda lo más
+        que pueda, si encuentra una unidad en el lugar al que se moverá, entonces se mueve un espacio antes, sigue comprobando
+        hasta que pueda moverse*/
+        if (h>=ejercito2.size())
+            h=0;
         int[]a=ejercito2.get(h).getPosicion();
         iconos[a[0]][a[1]]=new ImageIcon("src/main/resources/empty.png");
         ubicacionEnemigo[a[0]][a[1]]=0;
-        a=cpu.MoverAutomatico(h,ejercito2);
+        System.out.println("posicion nueva del enemigo "+ejercito2.get(h).getTipo()+" en la posicion "+ejercito2.get(h).getPosicion()[0]+","+ejercito2.get(h).getPosicion()[1]+": ");
+        a=cpu.MoverAutomatico(h,ejercito2,ubicacionAliado);
         ubicacionEnemigo[a[0]][a[1]]=1;
         iconos[a[0]][a[1]]=ejercito2.get(h).getIcon();
-        System.out.println(ejercito2.get(h).getPosicion()[0]+","+ejercito2.get(h).getPosicion()[1]);
+        System.out.println(a[0]+","+a[1]);
         h++;
         if (h==10)
             h=0;
         actualizarTablero();
     }
     public void atacarCPU(){
+        if (hh>=ejercito2.size()){
+            hh=0;
+        }
         int[] as= cpu.AtacarAutomatico(ejercito2,hh,ubicacionAliado);
-        if (ejercito2.get(hh).Attack(as)){
-            boolean f=ejercito1.get(ubicacionAliado[as[0]][as[1]]).receiveDamage(ejercito2.get(hh).getAtk());
-            if (f){
-                int[]a=ejercito1.get(ubicacionAliado[as[0]][as[1]]).getPosicion();
-                iconos[as[0]][as[1]]=new ImageIcon("src/main/resources/empty.png");
-                actualizarTablero();
-                System.out.println("ha muerto un soldado");
-                ubicacionAliado[as[0]][as[1]]=0;
-                for (int i=0;i<10;i++){
-                    if (as==ejercito1.get(i).getPosicion()){
-                        ejercito1.remove(i);
+        if(as[0]>-1||as[1]>-1) {
+            if (ejercito2.get(hh).Attack(as)) {
+                int ub=0;
+                for (int i=0;i<ejercito1.size();i++){
+                    if(ejercito1.get(i).getPosicion()[0]==as[0]&&ejercito1.get(i).getPosicion()[1]==as[1]){
+                        ub=i;
                     }
                 }
-            }
-            else{
-                System.out.println(ejercito1.get(ubicacionAliado[as[0]][as[1]]).getHp());
+                boolean f = ejercito1.get(ub).receiveDamage(ejercito2.get(hh).getAtk());
+                discoStu.playAttack();
+                if (f) {
+                    int[] a = ejercito1.get(ub).getPosicion();
+                    actualizarTablero();
+                    System.out.println("quedan " + ejercito1.size() + " unidades en tu ejercito");
+                    System.out.println("ha muerto un soldado");
+                    ubicacionAliado[as[0]][as[1]] = 0;
+                    iconos[as[0]][as[1]] = new ImageIcon("src/main/resources/empty.png");
+                    for (int i = 0; i < ejercito1.size(); i++) {
+                        if (as[0] == ejercito1.get(i).getPosicion()[0] && as[1] == ejercito1.get(i).getPosicion()[1]) {
+                            ejercito1.remove(i);
+                        }
+                    }
+                } else {
+                    System.out.println(ejercito1.get(ubicacionAliado[as[0]][as[1]]).getHp());
+                }
             }
         }
         hh++;
-        if(hh==10){
+        if(hh==ejercito2.size()){
             hh=0;
         }
-        discoStu.playAttack();
+        actualizarTablero();
     }
     public class agregarManAtArms implements ActionListener {
         @Override
@@ -470,12 +555,12 @@ public class Tablero {
         this.panelSur.add(atacar);
         this.panelSur.add(defender);
         this.panelSur.add(pasar);
-        JButton prueba=new JButton("prueba Computadora");
-        prueba.addActionListener(new moverComputadora());
-        this.panelSur.add(prueba);
-        JButton prueba1= new JButton("prueba ataque");
-        prueba1.addActionListener(new atacarComputadora());
-        this.panelSur.add(prueba1);
+        //JButton prueba=new JButton("prueba Computadora");
+        //prueba.addActionListener(new moverComputadora());
+        //this.panelSur.add(prueba);
+        //JButton prueba1= new JButton("prueba ataque");
+        //prueba1.addActionListener(new atacarComputadora());
+        //this.panelSur.add(prueba1);
         for(int i=0;i<10;i++)
             System.out.println(ejercito1.get(i));
         JOptionPane.showMessageDialog(null,"Ejercito aliado lleno");
@@ -483,8 +568,9 @@ public class Tablero {
                 " en la posicion "+ejercito1.get(selectSoldier).getPosicion()[0]+
                 ","+ejercito1.get(selectSoldier).getPosicion()[1]+
                 " está seleccionado");
+        System.out.println("ejercito enemigo le quedan "+ejercito2.size());
+        System.out.println("ejercito aliado le quedan "+ejercito1.size());
         discoStu.playCombat();
-
     }
 
 }
