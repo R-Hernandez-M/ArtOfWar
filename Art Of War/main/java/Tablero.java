@@ -176,6 +176,7 @@ public class Tablero {
                     selectorAccion=1;
                     discoStu.playMove();
                 }
+                panelSur.remove(mover);
                 actualizarTablero();
             }
             else if(selectorAccion==1){
@@ -203,7 +204,9 @@ public class Tablero {
                         actualizarTablero();
                         System.out.println("ejercito enemigo le quedan "+ejercito2.size());
                     }
+                    panelSur.remove(atacar);
                     selectorAccion=3;
+                    actualizarTablero();
                     if (ejercito2.isEmpty())
                         victoria=1;
                     System.out.println("victoria: "+victoria);
@@ -218,6 +221,7 @@ public class Tablero {
             else if(selectorAccion==2){
                 ejercito1.get(selectSoldier).defend();
                 selectorAccion=3;
+                panelSur.remove(defender);
                 actualizarTablero();
             }
         }
@@ -315,6 +319,11 @@ public class Tablero {
                     " en la posicion "+ejercito1.get(selectSoldier).getPosicion()[0]+
                     ","+ejercito1.get(selectSoldier).getPosicion()[1]+
                     " está seleccionado");
+            panelSur.remove(pasar);
+            panelSur.add(mover);
+            panelSur.add(atacar);
+            panelSur.add(defender);
+            panelSur.add(pasar);
         }
     }
     /*public class moverComputadora implements ActionListener {
@@ -379,6 +388,7 @@ public class Tablero {
         h++;
         if (h==10)
             h=0;
+        discoStu.playMove();
         actualizarTablero();
     }
     public void atacarCPU(){
